@@ -10,15 +10,11 @@ jobs:
       - run: unzip -q SideswipeAI-native.zip
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 17 }
-      - name: Android SDK
-        run: |
-          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0"
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: 8.9 }
       - name: Build
         working-directory: SideswipeAI
-        run: gradle :app:assembleRelease --no-daemon
+        run: gradle :app:assembleRelease --no-daemon --stacktrace
       - run: |
           mkdir -p out
           cp "$(find SideswipeAI/app/build/outputs/apk/release -name '*.apk' | head -n1)" out/SideswipeAI.apk
