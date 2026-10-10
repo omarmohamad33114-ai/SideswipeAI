@@ -14,12 +14,12 @@ jobs:
         with: { gradle-version: 8.9 }
       - name: Build
         working-directory: SideswipeAI
-        run: gradle :app:assembleRelease --no-daemon --stacktrace
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
       - run: |
           mkdir -p out
-          cp "$(find SideswipeAI/app/build/outputs/apk/release -name '*.apk' | head -n1)" out/SideswipeAI.apk
+          cp "$(find SideswipeAI/app/build/outputs/apk/debug -name '*.apk' | head -n1)" out/SideswipeAI-debug.apk
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
           name: Sideswipe AI
-          files: out/SideswipeAI.apk
+          files: out/SideswipeAI-debug.apk
