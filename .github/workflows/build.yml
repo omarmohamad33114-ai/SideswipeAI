@@ -1,0 +1,27 @@
+name: build-apk
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: unzip -q SideswipeAI-native.zip
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: 8.9 }
+      - name: Build
+        working-directory: SideswipeAI
+        run: gradle :app:assembleRelease --no-daemon
+      - run: |
+          mkdir -p out
+          cp "$(find SideswipeAI/app/build/outputs/apk/release -name '*.apk' | head -n1)" out/SideswipeAI.apk
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest
+          name: Sideswipe AI
+          files: out/SideswipeAI.apk
